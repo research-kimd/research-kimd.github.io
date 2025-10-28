@@ -1,0 +1,216 @@
+/* 기본 세팅 */
+* { box-sizing: border-box; }
+html:focus-within { scroll-behavior: smooth; }
+
+/* 색상 변수 설정 (라이트/다크 공통) */
+:root {
+  --bg: #f2f2f2;      /* 라이트 모드 배경 */
+  --text: #333333;    /* 라이트 모드 글자/메뉴/상단선 */
+  --top-line-h: 3px;
+  --nav-pad-y: 13px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #333333;    /* 다크 모드 배경 */
+    --text: #f2f2f2;  /* 다크 모드 글자/메뉴/상단선 */
+  }
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+
+:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 5px;
+  border-radius: 3px; /* 🔹 포커스 영역도 둥글게 */
+}
+
+
+/* 레이아웃 */
+.navbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px clamp(17px, 6vw, 27px);
+  position: relative; z-index: 10; background: transparent;
+}
+
+/* ✅ 여기: 변수로 통일 */
+.logo a {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: var(--text);
+  margin-top: -8px;  /* 🔹 위로 살짝 올림 */
+  display: inline-block; /* margin-top이 적용되려면 block 성질이 필요 */
+}
+
+/* 메뉴 */
+.nav-links {
+  list-style: none; display: flex; gap: clamp(20px, 4vw, 44px);
+  margin: 0; padding: 0;
+}
+/* ✅ 여기: 변수로 통일 */
+.nav-links a {
+  position: relative; 
+  text-decoration: none;
+  color: var(--text);
+  font-size: 1.7rem;
+  line-height: 1;
+  padding: 5px;
+  outline-offset: 3px;
+}
+
+/* 최상단 라인 애니메이션(hover/active) */
+.nav-links a::before {
+  content: ""; position: absolute; left: 0;
+  top: calc(-1 * var(--nav-pad-y) - var(--top-line-h)); /* 화면 최상단에 닿는 느낌 */
+  height: var(--top-line-h); width: 0;
+  background: currentColor;        /* 링크 색과 동일 */
+  transition: width .28s ease;
+}
+.nav-links a:hover::before { width: 100%; }
+/* aria-current 또는 .is-active가 있으면 항상 표시 */
+.nav-links a[aria-current="page"]::before,
+.nav-links a.is-active::before { width: 100%; }
+
+/* 모션 민감 사용자 배려 */
+@media (prefers-reduced-motion: reduce) {
+  .nav-links a::before { transition: none; }
+  html:focus-within { scroll-behavior: auto; }
+}
+
+/* 본문 & 푸터 */
+.container { max-width: 960px; margin: 48px auto; padding: 0 20px; }
+.page-title { margin-top: 0.5rem; letter-spacing: .01em; }
+.site-footer {
+  padding: 32px 20px; text-align: center; opacity: .7;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  .site-footer { border-top-color: rgba(255,255,255,.09); }
+}
+
+/* 포커스 가시성(키보드 접근성) */
+:focus-visible { outline: 2px solid #000; }
+@media (prefers-color-scheme: dark) {
+  :focus-visible { outline: 2px solid #fff; }
+}
+
+/* 🔹 햄버거 버튼 기본 스타일 */
+.hamburger {
+  display: none;                 /* 기본적으로는 데스크탑에서 숨김 */
+  background: transparent;
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+  flex-direction: column;        /* 세로로 쌓기 */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 모바일/작은 화면 전용 */
+@media (max-width: 930px) {
+  /* 패널 고정 너비 */
+  :root { --panel-w: 220px; }
+
+  /* 햄버거 버튼 */
+  .hamburger {
+    display: flex;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2001;
+  }
+  .hamburger .bar {
+    display: block;
+    width: 23px;
+    height: 3px;
+    background: var(--text);                 /* 기본: 본문 글자색 */
+    margin: 2px 0;
+    transition: background-color .3s ease;
+  }
+  /* 메뉴 열리면 햄버거 색 반전 */
+  .navbar.is-open .hamburger .bar { background: var(--bg); }
+
+  /* 오른쪽 슬라이드 메뉴 패널 (색 반전 + 고정폭) */
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--panel-w));
+    height: 100vh;
+    width: var(--panel-w);                   /* ✅ 250px 고정 폭 */
+    background: var(--text);                 /* 배경=글자색(반전) */
+    color: var(--bg);                        /* 글자=배경색(반전) */
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 20px;
+    padding: 80px 24px;
+    transition: right .35s ease-in-out, box-shadow .35s ease; /*
+    z-index: 2000;
+    box-shadow: -6px 0 18px rgba(0, 0, 0, 0.068);/* 패널 그림자 */
+    backdrop-filter: blur(1px);
+  }
+  .nav-links a {
+    font-size: 1.3rem;
+    color: var(--bg);                        /* 반전된 글자색 유지 */
+    text-decoration: none;
+    padding: 8px 0;
+  }
+  .nav-links a:hover { opacity: .85; }
+  .nav-links a::before { display: none; }    /* 모바일에선 상단선 효과 숨김 */
+
+  .nav-links a.is-active {
+    position: relative;
+  }
+
+  .nav-links a.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 6px;               /* 글자 아래 살짝 띄운 밑줄 */
+    width: 100%;
+    height: 2px;
+    background: currentColor;   /* 현재 글자색 (라이트/다크/반전 자동 대응) */
+    border-radius: 1px;
+  }
+
+  /* 열림 상태: 패널 슬라이드 인 */
+  .navbar.is-open .nav-links { right: 0; } 
+
+  /* 본문 오버레이: 패널 영역을 제외한 나머지만 어둡게 */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;    /* 기본: 전체 덮음 */
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    /* 오버레이 경계가 패널과 함께 이동하도록 right도 같이 애니메이션 */
+    transition: opacity .35s ease-in-out, right .35s ease-in-out;
+    z-index: 1000;
+    
+  }
+
+body.is-menu-open::before {
+  opacity: 1;
+  pointer-events: auto;
+  right: var(--panel-w);                    /* 패널(250px) 영역 비워두기 */
+  backdrop-filter: blur(1.5px);
+}
+  /* 메뉴 열렸을 때 본문 스크롤 잠금(권장) */
+  body.is-menu-open { overflow: hidden; }
+}
+
+html.no-anim body::before,
+html.no-anim .nav-links {
+  transition: none !important;
+}
