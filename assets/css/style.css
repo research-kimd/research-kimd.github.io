@@ -113,8 +113,26 @@ body {
   align-items: center;
 }
 
+@media (min-width: 765px) and (max-width: 930px) {
+
+
+
+  .nav-links a{
+    font-size: 1.2rem;                 /* 메뉴 글자 축소 */
+    line-height: 2.4rem;   /* ✅ 고정 line-height으로 아래선 정렬 유지 */
+    padding: 4px;                       /* 포커스 박스 작게 */
+  }
+  /* 상단 라인 위치/두께도 비례 보정 (네가 쓰는 변수 기반) */
+  :root{
+    --nav-pad-y: 22px;
+    --top-line-h: 3px;
+  }
+  /* 햄버거는 모바일 전용이므로 이 구간에서는 감춤 */
+  .hamburger{ display: none; }
+}
+
 /* 모바일/작은 화면 전용 */
-@media (max-width: 930px) {
+@media (max-width: 764px) {
   /* 패널 고정 너비 */
   :root { --panel-w: 220px; }
 
@@ -213,4 +231,31 @@ body.is-menu-open::before {
 html.no-anim body::before,
 html.no-anim .nav-links {
   transition: none !important;
+}
+
+main section {
+  margin-bottom: 2rem;
+}
+
+main h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.links li {
+  margin: 4px 0;
+}
+
+.links a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.links a:hover {
+  opacity: 0.8;
 }
