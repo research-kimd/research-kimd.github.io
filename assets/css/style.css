@@ -27,6 +27,16 @@ body {
   outline-offset: 5px;
   border-radius: 3px;
 }
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; min-height: 100vh; }
+main { flex: 1; }
+
+header, .container, .site-footer { width: 100%; }
+
+header {
+  border-bottom: 3px solid rgba(0, 0, 0, .7);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.08);
+}
 
 /* ========== Layout: Navbar (Grid: 로고 | 여백 | 메뉴/햄버거) ========== */
 .navbar {
@@ -34,7 +44,7 @@ body {
   grid-template-columns: auto 1fr auto; /* 1: 로고 | 2: 여백 | 3: 메뉴/햄버거 */
   align-items: center;
   justify-items: stretch;
-  padding: 18px clamp(17px, 6vw, 18px);
+  padding: 10px clamp(17px, 6vw, 18px);
   position: relative;
   z-index:10;
   background: transparent;
@@ -45,17 +55,18 @@ body {
 /* Logo */
 .logo { align-self: center; grid-column: 1; }
 .logo a {
+  font-family: 'Lora', serif;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: 400;
   font-size: 2.6rem;
   color: var(--text);
   display: inline-block;
-  transform: translateY(-8px); /* 로고만 미세 상향 */
+  transform: translateY(3px); /* 로고만 미세 상향 */
 }
 
 /* Nav links (스코프 변수는 여기로 모음) */
 .nav-links {
-  --nav-pad-y: 24px;   /* 상단선 위치 계산용(링크 기준) */
+  --nav-pad-y: 26px;   /* 상단선 위치 계산용(링크 기준) */
   --top-line-h: 3px;   /* 상단선 두께 */
   list-style: none;
   display: flex;
@@ -64,6 +75,7 @@ body {
   padding: 0;
   grid-column: 3;      /* 데스크탑: 메뉴는 항상 우측 칼럼 */
   justify-self: end;   /* 우측 끝 정렬 */
+  transform: translateY(10px);
 }
 
 .nav-links a {
@@ -98,14 +110,22 @@ body {
 }
 
 /* ========== Content & Footer ========== */
-.container { max-width: 1300px; margin: 48px auto; padding: 0 20px; }
-.page-title { margin-top: 0.5rem; letter-spacing: .01em; }
+.container { 
+  max-width: 1300px; 
+  margin: 1px auto; 
+  padding: 0 20px; 
+}
+.page-title { 
+  margin-top: 0.5rem; 
+  letter-spacing: .01em; 
+}
 .site-footer {
+  font-size: 1.4rem;
+  font-weight: 300;  
   max-width: 1300px;
   margin-left: auto;
   margin-right: auto;
-  /* 필요 시 위아래 여백도 조정 가능 */
-  /* margin-top: 48px; */
+  margin-bottom: 13px;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -119,7 +139,7 @@ body {
   background: transparent;
   border: 0;
   padding: 8px;
-  transform: translateY(-4px);
+  transform: translateY(5px);
   cursor: pointer;
   flex-direction: column;
   justify-content: center;
@@ -129,17 +149,18 @@ body {
 }
 .hamburger .bar {
   display: block;
-  width: 23px;
-  height: 3px;
+  width: 36px;
+  height: 4px;
   background: var(--text);
-  margin: 2px 0;
+  margin: 4px 0;
+  border-radius:2px;
   transition: background-color .3s ease;
 }
 
 /* ========== Tablet: 765–930px ========== */
 @media (min-width: 765px) and (max-width: 930px) {
   .nav-links {
-    --nav-pad-y: 31px;
+    --nav-pad-y: 34px;
     --top-line-h: 3px;
   }
   .nav-links a {
@@ -151,7 +172,7 @@ body {
 }
 
 /* ========== Mobile: ≤ 764px (오른쪽 패널) ========== */
-@media (max-width: 764px) {
+@media (max-width: 764.98px) {
   :root { --panel-w: 220px; }
 
   /* 햄버거는 항상 우측 고정(로고는 좌측) */
@@ -165,6 +186,7 @@ body {
 
   /* 모바일 패널(nav-links)은 fixed이므로 그리드 영향에서 분리 */
   .nav-links {
+    transform: none;
     position: fixed;
     top: 0;
     right: calc(-1 * var(--panel-w));
@@ -176,7 +198,7 @@ body {
     flex-direction: column;
     align-items: end;
     gap: 20px;
-    padding: 80px 24px;
+    padding: 100px 24px;
     transition: right .35s ease-in-out, box-shadow .35s ease;
     z-index: 2000;
     box-shadow: -6px 0 18px rgba(0, 0, 0, 0.068);
@@ -229,6 +251,13 @@ body {
   body.is-menu-open { overflow: hidden; }
 }
 
+/* ===== Publications: bigger right image + symmetric spacing ===== */
+:root{
+  --pub-pad: 32px;     /* 상·하 간격 (한 번에 조절) */
+  --pub-gap: 28px;     /* 텍스트–이미지 사이 간격 */
+  --pub-img: 300px;    /* 오른쪽 이미지 한 변(정사각) */
+}
+
 /* ========== No-Animation Helper ========== */
 html.no-anim body::before,
 html.no-anim .nav-links {
@@ -244,5 +273,130 @@ main h2 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 .links a { color: var(--text); text-decoration: underline; }
 .links a:hover { opacity: 0.8; }
 
+.page-title {
+  margin-top: 0rem;    /* 상단 간격 최소화 */
+  margin-bottom: 0rem; /* ✅ 헤더와 h2 간격 줄이기 */
+  letter-spacing: .01em;
+}
 
+.pubs h2 {
+  margin-top: 0;          /* ✅ h1과의 중복 여백 제거 */
+  margin-bottom: 0rem;    /* 섹션 시작 전 약간의 여유 */
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+/* ===== Horizontal publication layout ===== */
+.pubs {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
 
+.pub-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 18px 0 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.pub-card img {
+  flex-shrink: 0;
+  align-self: flex-start; /* ✅ 카드 상단 정렬 */
+  width: 320px;
+  height: 100%;            /* ✅ 카드 높이에 맞추기 */
+  object-fit: contain;     /* ✅ 원본 비율 유지 (긴 쪽이 꽉 차게) */
+  object-position: center; /* ✅ 중앙 정렬 */
+  border-radius: 10px;
+  order: 0; /* ✅ 기본은 오른쪽 (텍스트 뒤에 위치) */
+}
+
+.pub-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100%;              /* ✅ 카드 전체 높이 채움 */
+}
+
+.pub-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+/* ===== Publication Title: Lora font, underlined, no blue ===== */
+.pub-title a {
+  font-family: 'Roboto', serif;
+  font-weight: 600;
+  font-size: 1.7rem;
+  color: var(--text);               /* ✅ 파란색 제거 → 본문색 사용 */
+  text-decoration: underline;       /* ✅ 밑줄 유지 */
+  text-underline-offset: 3px;       /* 밑줄과 텍스트 간격 */
+  text-decoration-thickness: 1.5px; /* 밑줄 두께 살짝 강조 */
+  text-decoration-color: currentColor; /* ✅ 밑줄색도 본문색 */
+  transition: opacity 0.25s ease;
+}
+
+.pub-title a:hover {
+  opacity: 0.8;                     /* hover 시 살짝 투명해짐 */
+}
+
+.pub-summary {
+  font-family: 'Lora', serif;
+  font-weight: 400;
+  flex-grow: 1; /* 윗부분이 공간을 차지하게 해서 아래로 밀림 */
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.95;
+  margin: 0 0 10px;
+}
+
+.pub-footer {
+  margin-top: auto;              /* ✅ 자동으로 맨 아래로 밀기 */
+  padding-bottom: 0;             /* ✅ 선과 겹치지 않게 살짝 조정 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;     /* ✅ 내부 요소를 footer 맨 아래로 */
+}
+
+.pub-authors {
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin: 0 0 4px;
+}
+
+.pub-meta {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* 하단 구분선 색상 (다크모드 대비) */
+@media (prefers-color-scheme: dark) {
+  .pub-card { border-top-color: rgba(255,255,255,.15); }
+  .pub-card { border-bottom-color: rgba(255,255,255,.15); }
+  .pub-card img {
+    filter: invert(1) hue-rotate(180deg) contrast(0.75) brightness(1.1);
+  }
+}
+
+@media (max-width: 764.98px) {
+  .pub-card {
+    flex-direction: column;     /* ✅ 위아래 정렬 */
+    align-items: center;        /* 중앙정렬 */
+    text-align: left;
+  }
+
+  .pub-card img {
+    order: 1;                  /* ✅ 이미지 먼저 표시 */
+    width: 100%;                /* 부모 폭 채움 */
+    height: auto;               /* 비율 유지 */
+    margin-bottom: 16px;        /* 본문과 여백 */
+  }
+}
