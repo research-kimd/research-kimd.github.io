@@ -1,62 +1,73 @@
-/* 기본 세팅 */
+/* ========== Base ========== */
 * { box-sizing: border-box; }
 html:focus-within { scroll-behavior: smooth; }
 
-/* 색상 변수 설정 (라이트/다크 공통) */
 :root {
-  --bg: #f2f2f2;      /* 라이트 모드 배경 */
-  --text: #333333;    /* 라이트 모드 글자/메뉴/상단선 */
-  --top-line-h: 3px;
-  --nav-pad-y: 13px;
+  --bg: #f2f2f2;    /* 라이트 배경 */
+  --text: #333333;  /* 라이트 텍스트/선 */
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #333333;    /* 다크 모드 배경 */
-    --text: #f2f2f2;  /* 다크 모드 글자/메뉴/상단선 */
+    --bg: #333333;  /* 다크 배경 */
+    --text: #f2f2f2;/* 다크 텍스트/선 */
   }
 }
 
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif;
+  font-family: 'Roboto', 'Noto Sans KR', system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif;
   line-height: 1.6;
   color: var(--text);
   background: var(--bg);
+  margin: 0;
 }
 
-
+/* 키보드 포커스 */
 :focus-visible {
-  outline: 1px solid currentColor;
+  outline: 2px solid currentColor;
   outline-offset: 5px;
-  border-radius: 3px; /* 🔹 포커스 영역도 둥글게 */
+  border-radius: 3px;
 }
 
-
-/* 레이아웃 */
+/* ========== Layout: Navbar (Grid: 로고 | 여백 | 메뉴/햄버거) ========== */
 .navbar {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 18px clamp(17px, 6vw, 27px);
-  position: relative; z-index: 10; background: transparent;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* 1: 로고 | 2: 여백 | 3: 메뉴/햄버거 */
+  align-items: center;
+  justify-items: stretch;
+  padding: 18px clamp(17px, 6vw, 18px);
+  position: relative;
+  z-index:10;
+  background: transparent;
+  max-width: 1300px;     /* 본문 폭과 동일한 제한 */
+  margin: 0 auto;        /* 화면 가운데 정렬 → 양쪽 자동 여백 */
 }
 
-/* ✅ 여기: 변수로 통일 */
+/* Logo */
+.logo { align-self: center; grid-column: 1; }
 .logo a {
   text-decoration: none;
-  font-weight: 700;
-  font-size: 2.2rem;
+  font-weight: 400;
+  font-size: 2.6rem;
   color: var(--text);
-  margin-top: -8px;  /* 🔹 위로 살짝 올림 */
-  display: inline-block; /* margin-top이 적용되려면 block 성질이 필요 */
+  display: inline-block;
+  transform: translateY(-8px); /* 로고만 미세 상향 */
 }
 
-/* 메뉴 */
+/* Nav links (스코프 변수는 여기로 모음) */
 .nav-links {
-  list-style: none; display: flex; gap: clamp(20px, 4vw, 44px);
-  margin: 0; padding: 0;
+  --nav-pad-y: 24px;   /* 상단선 위치 계산용(링크 기준) */
+  --top-line-h: 3px;   /* 상단선 두께 */
+  list-style: none;
+  display: flex;
+  gap: clamp(20px, 4vw, 44px);
+  margin: 0;
+  padding: 0;
+  grid-column: 3;      /* 데스크탑: 메뉴는 항상 우측 칼럼 */
+  justify-self: end;   /* 우측 끝 정렬 */
 }
-/* ✅ 여기: 변수로 통일 */
+
 .nav-links a {
-  position: relative; 
+  position: relative;
   text-decoration: none;
   color: var(--text);
   font-size: 1.7rem;
@@ -65,197 +76,173 @@ body {
   outline-offset: 3px;
 }
 
-/* 최상단 라인 애니메이션(hover/active) */
+/* Hover/Active top-line */
 .nav-links a::before {
-  content: ""; position: absolute; left: 0;
-  top: calc(-1 * var(--nav-pad-y) - var(--top-line-h)); /* 화면 최상단에 닿는 느낌 */
-  height: var(--top-line-h); width: 0;
-  background: currentColor;        /* 링크 색과 동일 */
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(-1 * var(--nav-pad-y) - var(--top-line-h));
+  height: var(--top-line-h);
+  width: 0;
+  background: currentColor;
   transition: width .28s ease;
 }
 .nav-links a:hover::before { width: 100%; }
-/* aria-current 또는 .is-active가 있으면 항상 표시 */
 .nav-links a[aria-current="page"]::before,
 .nav-links a.is-active::before { width: 100%; }
 
-/* 모션 민감 사용자 배려 */
+/* 모션 민감 사용자 */
 @media (prefers-reduced-motion: reduce) {
   .nav-links a::before { transition: none; }
   html:focus-within { scroll-behavior: auto; }
 }
 
-/* 본문 & 푸터 */
-.container { max-width: 960px; margin: 48px auto; padding: 0 20px; }
+/* ========== Content & Footer ========== */
+.container { max-width: 1300px; margin: 48px auto; padding: 0 20px; }
 .page-title { margin-top: 0.5rem; letter-spacing: .01em; }
 .site-footer {
-  padding: 32px 20px; text-align: center; opacity: .7;
-  border-top: 1px solid rgba(0,0,0,.06);
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  /* 필요 시 위아래 여백도 조정 가능 */
+  /* margin-top: 48px; */
+  padding-left: 20px;
+  padding-right: 20px;
 }
 @media (prefers-color-scheme: dark) {
   .site-footer { border-top-color: rgba(255,255,255,.09); }
 }
 
-/* 포커스 가시성(키보드 접근성) */
-:focus-visible { outline: 2px solid #000; }
-@media (prefers-color-scheme: dark) {
-  :focus-visible { outline: 2px solid #fff; }
-}
-
-/* 🔹 햄버거 버튼 기본 스타일 */
+/* ========== Hamburger (기본은 데스크탑 숨김) ========== */
 .hamburger {
-  display: none;                 /* 기본적으로는 데스크탑에서 숨김 */
+  display: none;
   background: transparent;
   border: 0;
   padding: 8px;
+  transform: translateY(-4px);
   cursor: pointer;
-  flex-direction: column;        /* 세로로 쌓기 */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  grid-column: 3;     /* 우측 칼럼에 고정 */
+  justify-self: end;  /* 칼럼 안에서도 오른쪽 끝 */
+}
+.hamburger .bar {
+  display: block;
+  width: 23px;
+  height: 3px;
+  background: var(--text);
+  margin: 2px 0;
+  transition: background-color .3s ease;
 }
 
+/* ========== Tablet: 765–930px ========== */
 @media (min-width: 765px) and (max-width: 930px) {
-
-
-
-  .nav-links a{
-    font-size: 1.2rem;                 /* 메뉴 글자 축소 */
-    line-height: 2.4rem;   /* ✅ 고정 line-height으로 아래선 정렬 유지 */
-    padding: 4px;                       /* 포커스 박스 작게 */
-  }
-  /* 상단 라인 위치/두께도 비례 보정 (네가 쓰는 변수 기반) */
-  :root{
-    --nav-pad-y: 22px;
+  .nav-links {
+    --nav-pad-y: 31px;
     --top-line-h: 3px;
   }
-  /* 햄버거는 모바일 전용이므로 이 구간에서는 감춤 */
-  .hamburger{ display: none; }
+  .nav-links a {
+    font-size: 1.2rem;
+    line-height: 2.4rem; /* 고정 라인으로 상단선 정렬 안정화 */
+    padding: 4px;
+  }
+  .hamburger { display: none; } /* 햄버거는 모바일 전용 */
 }
 
-/* 모바일/작은 화면 전용 */
+/* ========== Mobile: ≤ 764px (오른쪽 패널) ========== */
 @media (max-width: 764px) {
-  /* 패널 고정 너비 */
   :root { --panel-w: 220px; }
 
-  /* 햄버거 버튼 */
+  /* 햄버거는 항상 우측 고정(로고는 좌측) */
   .hamburger {
     display: flex;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    grid-column: 3;
+    justify-self: end;
     z-index: 2001;
   }
-  .hamburger .bar {
-    display: block;
-    width: 23px;
-    height: 3px;
-    background: var(--text);                 /* 기본: 본문 글자색 */
-    margin: 2px 0;
-    transition: background-color .3s ease;
-  }
-  /* 메뉴 열리면 햄버거 색 반전 */
   .navbar.is-open .hamburger .bar { background: var(--bg); }
 
-  /* 오른쪽 슬라이드 메뉴 패널 (색 반전 + 고정폭) */
+  /* 모바일 패널(nav-links)은 fixed이므로 그리드 영향에서 분리 */
   .nav-links {
     position: fixed;
     top: 0;
     right: calc(-1 * var(--panel-w));
     height: 100vh;
-    width: var(--panel-w);                   /* ✅ 250px 고정 폭 */
-    background: var(--text);                 /* 배경=글자색(반전) */
-    color: var(--bg);                        /* 글자=배경색(반전) */
+    width: var(--panel-w);
+    background: var(--text); /* 반전 */
+    color: var(--bg);
     display: flex;
     flex-direction: column;
     align-items: end;
     gap: 20px;
     padding: 80px 24px;
-    transition: right .35s ease-in-out, box-shadow .35s ease; /*
+    transition: right .35s ease-in-out, box-shadow .35s ease;
     z-index: 2000;
-    box-shadow: -6px 0 18px rgba(0, 0, 0, 0.068);/* 패널 그림자 */
+    box-shadow: -6px 0 18px rgba(0, 0, 0, 0.068);
     backdrop-filter: blur(1px);
+
+    /* 레이아웃 깜빡임 예방용: 그리드 칼럼 지정 제거 */
+    grid-column: auto;
+    justify-self: auto;
   }
   .nav-links a {
     font-size: 1.3rem;
-    color: var(--bg);                        /* 반전된 글자색 유지 */
+    color: var(--bg);
     text-decoration: none;
     padding: 8px 0;
   }
   .nav-links a:hover { opacity: .85; }
-  .nav-links a::before { display: none; }    /* 모바일에선 상단선 효과 숨김 */
+  .nav-links a::before { display: none; } /* 모바일에선 상단선 숨김 */
 
-  .nav-links a.is-active {
-    position: relative;
-  }
-
+  .nav-links a.is-active { position: relative; }
   .nav-links a.is-active::after {
     content: "";
     position: absolute;
     left: 0;
-    bottom: 6px;               /* 글자 아래 살짝 띄운 밑줄 */
+    bottom: 6px;
     width: 100%;
     height: 2px;
-    background: currentColor;   /* 현재 글자색 (라이트/다크/반전 자동 대응) */
+    background: currentColor;
     border-radius: 1px;
   }
 
-  /* 열림 상태: 패널 슬라이드 인 */
   .navbar.is-open .nav-links { right: 0; } 
 
-  /* 본문 오버레이: 패널 영역을 제외한 나머지만 어둡게 */
+  /* 본문 오버레이 (패널 제외 영역) */
   body::before {
     content: "";
     position: fixed;
-    top: 0; left: 0; bottom: 0; right: 0;    /* 기본: 전체 덮음 */
+    inset: 0;
     background: rgba(0, 0, 0, 0.35);
     opacity: 0;
     pointer-events: none;
-    /* 오버레이 경계가 패널과 함께 이동하도록 right도 같이 애니메이션 */
     transition: opacity .35s ease-in-out, right .35s ease-in-out;
     z-index: 1000;
-    
   }
-
-body.is-menu-open::before {
-  opacity: 1;
-  pointer-events: auto;
-  right: var(--panel-w);                    /* 패널(250px) 영역 비워두기 */
-  backdrop-filter: blur(1.5px);
-}
-  /* 메뉴 열렸을 때 본문 스크롤 잠금(권장) */
+  body.is-menu-open::before {
+    opacity: 1;
+    pointer-events: auto;
+    right: var(--panel-w);
+    backdrop-filter: blur(1.5px);
+  }
   body.is-menu-open { overflow: hidden; }
 }
 
+/* ========== No-Animation Helper ========== */
 html.no-anim body::before,
 html.no-anim .nav-links {
   transition: none !important;
 }
 
-main section {
-  margin-bottom: 2rem;
-}
+/* ========== Page Sections & Links ========== */
+main section { margin-bottom: 2rem; }
+main h2 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 
-main h2 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
+.links ul { list-style: none; padding: 0; }
+.links li { margin: 4px 0; }
+.links a { color: var(--text); text-decoration: underline; }
+.links a:hover { opacity: 0.8; }
 
-.links ul {
-  list-style: none;
-  padding: 0;
-}
 
-.links li {
-  margin: 4px 0;
-}
 
-.links a {
-  color: var(--text);
-  text-decoration: underline;
-}
-
-.links a:hover {
-  opacity: 0.8;
-}
